@@ -1,0 +1,166 @@
+---
+layout: post
+title:  "可能是史上最详情的闭包解释了"
+date:   2017-07-11 14:34:37 +0800
+categories: jekyll update
+---
+#史上最详细闭包解释
+闭包的概念
+> 当函数可以记住并访问所在词法作用域时，就产生了闭包，即使函数是在当前词法作用域外执行。
+
+函数式参数
+> 函数式参数(‘‘Funarg’’)--是指值为函数的参数
+```javascript
+function example(funArg) {
+    funArg()
+}
+example(function(){
+    alert('funArg')    
+})
+```
+上述例子中funarg的实际参数其实是传递给example的匿名函数.
+
+Funarg问题
+
+在面向堆栈的编程语言中，函数的局部变量是保存在栈上的，每当函数激活的时候，这些变量和函数参数都会压入到该堆栈上。
+当函数返回的时候，这些参数又会从栈中移除，这些模型对将函数作为函数值使用的时候有很大限制(比方说，作为返回值从夫函数中返回)。绝大部分情况下，问题会出现在当函数有自由变量的时候
+*自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量*
+```javascript
+function testFn() {
+    var loalVar = 10
+    function innerFn(innerParam){
+        alert(innerParam + localVar)
+    }
+    
+    return innerFn
+}
+var someFn = testFn()
+someFn(20) // 30
+```
+上述例子中，对于InnerFn函数来说，localVar就属于自由变量
+对于采用面向栈模型来存储局部变量的系统而言，就意味着当testFn函数调用结束后，其局部变量都会堆栈中移除。这样一来，当从外部对innerFn进行函数调用时，就会发生错误(因为LocalVar变量已经不存在了)
+
+而且，上述例子在面向栈实现模型中，要想将InnerFn以返回值返回根本不可能的，因为它是testFn函数的局部变量，也会随着testFn的返回而移除。
+
+还有一个问题是当系统采用动态作用域，函数作为函数参数的时候有关
+例子(伪代码)
+
+```javascript
+ var z = 10
+ function foo() {
+     alert(z)
+ }
+ foo() // 10 - 使用动态和静态作用域的时候
+ 
+ (function() {
+     var z = 20
+     foo() // 10 - 使用静态作用域, 20 -使用动态作用域
+ })()
+ 
+ (function(funArg){
+    var z = 30;
+    funArg() // 10 -使用静态作用域 30-使用动态作用域     
+ })(foo)
+```
+我们看到，采用动态作用域，变量的系统通过动态栈来管理的。因此，自用变量是在当前活跃的动态链中查询的，而不是在函数创建的时候保存起来的静态作用域链中查询的。
+这样就会产生冲突。比方说，即使z仍然存在，还是会有这样一个问题:在不同的函数调用中，z的值到底去哪个呢
+上述描述的就是两类funarg问题--取决于是否将函数以返回值返回(第一类问题)以及是否将函数当函数参数使用(第二类问题)。
+为了解决上述问题，就引入了闭包的概念。
+
+##闭包
+>闭包是代码块和创建代码块的上下文数据的结合。
+```javascript
+var x = 20;
+function foo(){
+    alret(x)
+}
+
+fooClosure = {
+    call: foo
+    lexicalEnvironment: {x: 20}
+}
+```
+对于要实现将局部变量在上下文销毁后仍然保存下来，基于栈的实现显然是不适用的(因为与基于栈的机构相矛盾)。因此在这种情况下，上层作用域的闭包数据是通过 *动态分配内存的方式来实现的(基于‘‘堆’’的实现)*，配合使用垃圾回收器(garbage collector简称GC)和引用计数(reference counting) 。这种实现方式比基于栈的实现性能要低。然而，任何一种实现总是可以优化的： 可以分析函数是否使用了自由变量，函数式参数或者函数式值，然后根据情况来决定 —— 是将数据存放在堆栈中还是堆中。
+
+```javascript
+var x = 10
+function foo() {
+    alert(x)
+}
+(function(funArg){
+    var x = 20
+    funArg() // 10, 不是20
+})(foo)
+```
+技术上说，创建该函数的父级上下文的数据是保存在函数的内部属性[[Scope]]中的。根据函数创建的算法，所有的函数都是闭包，因为它们都是在创建的时候就保存了上层上下文的作用域链(除开异常情况)(不管函数后续是否会激活--[[Scope]]在创建的时候就有了):
+```javascript
+var x = 10
+function foo(){
+    alert(x)
+}
+foo: <FunctoinObject> =  {
+    [[Call]]: <code block of foo>,
+     [[Scope]]: {
+         global: {
+             x: 10
+         }
+     },
+     ...
+}
+```
+##所有对象都引用一个Scope
+在ECMAScript中，同一个父上下文中创建的闭包共用一个[[Scope]]属性。也就是说，某个闭包对其中[[Scope]]的变量做修改会影响到其他闭包对其变量的读取:
+*所有的内部函数都共享同一个父作用域*
+```javascript
+var firstClosure;
+var secondClosure;
+
+function foo() {
+
+  var x = 1;
+
+  firstClosure = function () { return ++x; };
+  secondClosure = function () { return --x; };
+
+  x = 2; // 影响 AO["x"], 在2个闭包公有的[[Scope]]中
+
+  alert(firstClosure()); // 3, 通过第一个闭包的[[Scope]]
+}
+
+foo();
+
+alert(firstClosure()); // 4
+alert(secondClosure()); // 3
+```
+关于这个功能有一个非常普遍的认知错误如下
+```javascript
+var data = [];
+
+for (var k = 0; k < 3; k++) {
+  data[k] = function () {
+    alert(k);
+  };
+}
+
+data[0](); // 3, 而不是0
+data[1](); // 3, 而不是1
+data[2](); // 3, 而不是2
+```
+上面的例子就证明了--同一个上下文中创建的闭包是公用一个[[Scope]]属性的。
+下面，创建一个闭包就可以解决这个问题了:
+```javascript
+var data = [];
+
+for (var k = 0; k < 3; k++) {
+  data[k] = (function _helper(x) {
+    return function () {
+      alert(x);
+    };
+  })(k); // 传入"k"值
+}
+
+// 现在结果是正确的了
+data[0](); // 0
+data[1](); // 1
+data[2](); // 2
+```

@@ -15,23 +15,22 @@
 # in the templates via {{ site.myvariable }}.
 title: Jason's blog
 email: lzb_sun@163.com 
-description: > # this means to ignore newlines until "baseurl:"
-  # Write an awesome description for your new site here. You can edit this
-  # line in _config.yml. It will appear in your document head meta (for
-  # Google search results) and in your feed.xml site description.
+description: 此网站所有代码和文章都由李志兵维护，除了与个人资料相关的内容之外，您可以随意转发，请保留“李志兵”的署名。
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
 github_username:  lzbSun
-google-analytics: UA-102151816-1
+google_analytics: UA-102151816-1
 
 # Build settings
 markdown: kramdown
-theme: minima
+# theme: minima
+# theme: jekyll-theme-cayman
 gems:
   - jekyll-feed
 disqus:
   shortname: jasonsun
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
