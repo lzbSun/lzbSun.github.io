@@ -52,4 +52,4 @@ c.next = a.next; // 将c的结点的next指针指向b结点；
 5. 求链表的中间结点
 
 完整的单链表例子：
-{% include_code lang:javascript linklist.ts %}
+{% include_code lang:typescript linklist.ts %}
