@@ -53,3 +53,22 @@ c.next = a.next; // 将c的结点的next指针指向b结点；
 
 完整的单链表例子：
 {% include_code lang:typescript linklist.ts %}
+
+### 例：合并两个有序单链表
+
+> a { 1,4,5} b {3,7,9}
+
+```javascript
+const lista = new LinkedList();
+lista.append(1);
+lista.append(5);
+lista.append(7);
+
+const listb = new LinkedList();
+listb.append(3);
+listb.append(8);
+listb.append(9);
+
+let mergeList = mergeListNode(lista.head.next, listb.head.next);
+console.log(mergeList);
+```

@@ -1,17 +1,17 @@
-class ListNode {
+class CListNode {
   element: any;
-  next: ListNode | null;
+  next: CListNode | null;
   constructor(element) {
     this.element = element;
     this.next = null;
   }
 }
 
-class LinkedList {
-  head: ListNode;
+class CLinkedList {
+  head: CListNode;
 
   constructor() {
-    this.head = new ListNode("head");
+    this.head = new CListNode("head");
   }
   findByValue(item) {
     let currentNode = this.head.next;
@@ -33,7 +33,7 @@ class LinkedList {
   }
 
   append(newElement) {
-    const newNode = new ListNode(newElement);
+    const newNode = new CListNode(newElement);
     let currentNode = this.head;
     while (currentNode.next) {
       currentNode = currentNode.next;
@@ -47,7 +47,7 @@ class LinkedList {
       console.log("Not found");
       return;
     }
-    let newNode = new ListNode(newElement);
+    let newNode = new CListNode(newElement);
     newNode.next = node.next;
     node.next = newNode;
   }
@@ -81,8 +81,8 @@ class LinkedList {
   }
   // 反转单链表
   reverseList() {
-    let newNode = new ListNode("head");
-    let currentNode = this.head as ListNode | null;
+    let newNode = new CListNode("head");
+    let currentNode = this.head as CListNode | null;
 
     while (currentNode) {
       let nextNode = currentNode.next;
@@ -95,7 +95,7 @@ class LinkedList {
   // 环检测
   circleCheck() {
     let fast = this.head.next;
-    let slow = this.head as ListNode | null;
+    let slow = this.head as CListNode | null;
 
     while (fast !== null && fast.next !== null) {
       fast = fast.next.next;
@@ -107,16 +107,16 @@ class LinkedList {
 
   findMiddleNode() {
     let fast = this.head.next;
-    let slow = this.head as ListNode | null;
+    let slow = this.head as CListNode | null;
     while (fast !== null && fast.next !== null) {
-      fast = fast.next;
+      fast = fast.next.next;
       slow = slow!.next;
     }
     return slow;
   }
 }
 
-const mergeSortedList = (listA: ListNode | null, listB: ListNode | null) => {
+const mergeSortedList = (listA: CListNode | null, listB: CListNode | null) => {
   if (!listA) {
     return listB;
   }
@@ -124,7 +124,7 @@ const mergeSortedList = (listA: ListNode | null, listB: ListNode | null) => {
     return listA;
   }
 
-  let resultList: ListNode | null = null;
+  let resultList: CListNode | null = null;
 
   if (listA.element < listB.element) {
     resultList = listA;
@@ -133,21 +133,22 @@ const mergeSortedList = (listA: ListNode | null, listB: ListNode | null) => {
     resultList = listB;
     listB = listB.next;
   }
-
+  let currentNode = resultList;
   while (listA !== null && listB !== null) {
     if (listA.element < listB.element) {
-      resultList.next = listA;
+      currentNode.next = listA;
       listA = listA.next;
     } else {
-      resultList.next = listB;
+      currentNode.next = listB;
       listB = listB.next;
     }
+    currentNode = currentNode.next;
   }
   if (listA) {
-    resultList.next = listA;
+    currentNode.next = listA;
   }
   if (listB) {
-    resultList.next = listB;
+    currentNode.next = listB;
   }
 
   return resultList;

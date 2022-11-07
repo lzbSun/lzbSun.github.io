@@ -57,3 +57,36 @@ const selectSort = (originArr: number[]) => {
   }
   return arr;
 };
+
+// 归并排序
+// 采用分治思想
+const mergeSort: any = (originArr: number[]) => {
+  const arr = [...originArr];
+  // 当任意数组分解到只有一个时返回。
+  if (arr.length <= 1) return arr;
+
+  const len = arr.length;
+  const middle = Math.floor(len / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+  return margeArr(mergeSort(left), mergeSort(right));
+};
+
+const margeArr = (left: number[], right: number[]) => {
+  let temp: number[] = [];
+  let leftIndex = 0,
+    leftLen = left.length;
+  let rightIndex = 0,
+    rightLen = right.length;
+  while (leftIndex < leftLen && rightIndex < rightLen) {
+    if (left[leftIndex] < right[rightIndex]) {
+      temp.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      temp.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+  temp = temp.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return temp;
+};
