@@ -90,3 +90,34 @@ const margeArr = (left: number[], right: number[]) => {
   temp = temp.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   return temp;
 };
+
+// quick sort
+const quickSort = (arr: number[], left, right) => {
+  if (left < right) {
+    let pivot = right;
+    let partitionIndex = partition(arr, pivot, left, right);
+    quickSort(arr, left, partitionIndex - 1 < left ? left : partitionIndex - 1);
+    quickSort(
+      arr,
+      partitionIndex + 1 > right ? right : partitionIndex + 1,
+      right
+    );
+  }
+};
+const partition = (arr: number[], pivot: number, left: number, right) => {
+  const pivotVal = arr[pivot];
+  let startIndex = left;
+
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotVal) {
+      const temp = arr[i];
+      arr[i] = arr[startIndex];
+      arr[startIndex] = temp;
+      startIndex++;
+    }
+  }
+  const temp = arr[startIndex];
+  arr[startIndex] = arr[pivot];
+  arr[pivot] = temp;
+  return startIndex;
+};
