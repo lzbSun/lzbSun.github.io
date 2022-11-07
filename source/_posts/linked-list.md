@@ -3,7 +3,7 @@ title: 单链表（如何轻松写出正确的链表代码）
 date: 2022-11-06 17:28:42
 tags: 数据结构
 comments: true
-index_img: /assets/iron_man.JPG
+index_img: /assets/linkedlist.png
 ---
 
 链表的基础知识其实很简单，但是要写出好的链表代码不是容易的事儿，尤其是那些复杂的链表操作，比如链表反转、有序链表合并，写的时候很容易出错。里面有很多指针
