@@ -3,7 +3,7 @@ title: 排序
 date: 2022-11-04 17:23:47
 tags: 排序
 comments: true
-index_img: /assets/iron_man.JPG
+index_img: /assets/quicksort.png
 ---
 
 ## 冒泡排序, 插入排序, 选择排序, 归并排序, 快排
