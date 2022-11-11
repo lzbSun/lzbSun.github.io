@@ -5,6 +5,7 @@ tags:
   - HTTP
   - Cookie
 index_img: /assets/christmas-sugar-cookies.jpg
+banner_img: /assets/christmas-sugar-cookies.jpg
 ---
 
 Cookie 是一种可用于向网站添加持久性状态的方法。每个 Cookie 都是一对 `key=value`，以及许多控制 Cookie 何时何地使用的属性。你可以使用这些属性设置诸如过期

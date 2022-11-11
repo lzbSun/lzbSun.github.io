@@ -3,6 +3,7 @@ title: top k
 date: 2022-11-07 12:10:53
 tags: 算法
 index_img: /assets/topk.png
+banner_img: /assets/topk.png
 ---
 
 > 什么是 Top K 问题？简单来说就是在一组数据里面找到频率出现最高的前 K 个数，或前 K 大（当然也可以是前 K 小）的数。
