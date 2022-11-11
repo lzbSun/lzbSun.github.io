@@ -1,7 +1,9 @@
 ---
 title: Cookie SameSite 用法
 date: 2022-11-09 13:38:49
-tags: HTTP, Cookie
+tags:
+  - HTTP
+  - Cookie
 index_img: /assets/christmas-sugar-cookies.jpg
 ---
 
