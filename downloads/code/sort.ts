@@ -39,7 +39,7 @@ const insertSort = (originArr: number[]) => {
 };
 
 // 选择排序
-// 找到最小的然后跟前面的严肃调换位置
+// 找到最小的然后跟前面的元素调换位置
 const selectSort = (originArr: number[]) => {
   const arr = [...originArr];
   const len = arr.length;

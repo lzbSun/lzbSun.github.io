@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/ironMan.jpg">
+  <link rel="icon" href="/assets/ironMan.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="$Jason X">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Cookie 是一种可用于向网站添加持久性状态的方法。每个 Cookie 都是一对 key&#x3D;value，以及许多控制 Cookie 何时何地使用的属性。你可以使用这些属性设置诸如过期日期或指定 Cookie 值仅仅可以通过 HTTPS 访问。服务器可以通过在响应头中设置 Set-Cookie 头来设置 Cookie。 假设您有一个博客，你想在其中向用户显示”最新消息”的宣传。用户可以选择不看这则宣">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cookie SameSite 用法">
+<meta property="og:url" content="https://lzbsun.github.io/2022/11/09/cookie/index.html">
+<meta property="og:site_name" content="$JasonX talk">
+<meta property="og:description" content="Cookie 是一种可用于向网站添加持久性状态的方法。每个 Cookie 都是一对 key&#x3D;value，以及许多控制 Cookie 何时何地使用的属性。你可以使用这些属性设置诸如过期日期或指定 Cookie 值仅仅可以通过 HTTPS 访问。服务器可以通过在响应头中设置 Set-Cookie 头来设置 Cookie。 假设您有一个博客，你想在其中向用户显示”最新消息”的宣传。用户可以选择不看这则宣">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lzbsun.github.io/assets/christmas-sugar-cookies.jpg">
+<meta property="article:published_time" content="2022-11-09T13:38:49.000Z">
+<meta property="article:modified_time" content="2022-11-11T07:10:00.225Z">
+<meta property="article:author" content="$Jason X">
+<meta property="article:tag" content="HTTP, Cookie">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lzbsun.github.io/assets/christmas-sugar-cookies.jpg">
+  
+  
+  
+  <title>Cookie SameSite 用法 - $JasonX talk</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"lzbsun.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>$JasonX talk</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Cookie SameSite 用法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-11-09 13:38" pubdate>
+          2022年11月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Cookie SameSite 用法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Cookie 是一种可用于向网站添加持久性状态的方法。每个 Cookie 都是一对 <code>key=value</code>，以及许多控制 Cookie 何时何地使用的属性。你可以使用这些属性设置诸如过期<br>日期或指定 Cookie 值仅仅可以通过 HTTPS 访问。服务器可以通过在响应头中设置 <code>Set-Cookie</code> 头来设置 Cookie。</p>
+<p>假设您有一个博客，你想在其中向用户显示”最新消息”的宣传。用户可以选择不看这则宣传，然后在一段时间内，他们就不会再次看到这则宣传。您可以将用户的首选项存储在 cookie 中，<br>并设置为在一个月（2,600,000 秒）后过期，并且仅通过 HTTPS 发送。该标头如下所示：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">promo_shown</span>=1; <span class="hljs-attribute">Max-Age</span>=2600000; Secure<br></code></pre></td></tr></table></figure>
+
+<p>当你的读者查看的页面满足这些要求，即他们处于安全连接上且 Cookie 还不到一个月，那么他们的浏览器将在其请求中发送此标头：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Cookie: <span class="hljs-attribute">promo_shown</span>=1<br></code></pre></td></tr></table></figure>
+
+<p>你还可以使用 <code>document.cookie</code> 在 JavaScript 中添加和读取该网站可用的 Cookie。<code>document.cookie</code> 进行赋值将创建或覆盖一个带有该键的 Cookie。例如，你可以在浏览器的 JavaScript 控制台中尝试以下操作：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">→ document.cookie <span class="hljs-operator">=</span> <span class="hljs-string">&quot;promo_shown=1; Max-Age=2600000; Secure&quot;</span><br>← <span class="hljs-string">&quot;promo_shown=1; Max-Age=2600000; Secure&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>读取 <code>document.cookie</code> 将输出当前上下文中可访问的所有 Cookie，每个 Cookie 用分号进行分隔：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">→ document.cookie<span class="hljs-comment">;</span><br>← <span class="hljs-string">&quot;promo_shown=1; color_theme=peachpuff; sidebar_loc=left&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>如果你在所选择的一系列热门网站上尝试此操作，就会注意到大多数网站设置的 Cookie 远不止三个。<br>在大多数情况下，这些 Cookie 会在每次向该域名发出请求时被发送，这会产生多种影响。对你的用户来说，上传带宽通常比下载更受限，因此，所有出站请求的开销都会使你的首字节时间发生延迟。<br>请在 Cookie 数量和大小的设置上做到保守。使用 <code>Max-Age</code> 属性来帮助确保 Cookie 的停留时间不会超过所需时间</p>
+<h2 id="第一方和第三方-Cookie"><a href="#第一方和第三方-Cookie" class="headerlink" title="第一方和第三方 Cookie"></a>第一方和第三方 Cookie</h2><p>如果再回到你之前查看的那几个网站，可能会注意到不仅仅是你当前访问的域名有 Cookie，许多域名都有 Cookie。<br>与当前网站的域名（即浏览器地址栏中显示的内容）相匹配的 Cookie 被称为第一方 Cookie。同样，来自当前网站以外域名的 Cookie 被称为第三方 Cookie。<br>这不是一个绝对的标签，而是相对于用户上下文来决定的。同一个 Cookie 可以是第一方的，也可以是第三方的，具体取决于用户当时所在的网站。</p>
+<p>继续上面的例子，假设你的一篇博文中有一张非常独特的照片，而这张照片被托管在&#x2F;assets&#x2F;iron_man.png。<br>因为照片十分令人惊叹，其他人直接在他们的网站上使用了该照片。如果访问者访问过您的博客并拥有 <code>promo_shown</code> cookie，那么当他们在其他人的网站上浏览 iron_man.png 时，就会在图像请求中发送该 Cookie。这对任何一方都不是特别有用，<br>因为 <code>promo_shown</code> 在其他人的网站上不用于任何内容，只是增加了请求的开销。</p>
+<p>网络的其中一项文化属性就是它在默认情况下往往是开放的。这也是如此多的人得以在网络上创建自己的内容和应用程序的一部分原因。<br>然而，这也带来了许多安全和隐私问题。跨站请求伪造 (CSRF) 攻击依赖于这样一个事实，即 Cookie 会被附加到一个给定域名的任何请求（无论是谁发起请求）。<br>例如，如果你访问 <code>lzbsun.example</code>，那么它就可以触发对 <code>blog.example</code> 的请求，并且你的浏览器会欣然附加相关的 Cookie。如果你的博客对验证这些请求的方式没有多加留心，那么 <code>lzbsun.example</code> 可能会触发删除帖子或添加自己的内容等操作。</p>
+<p>用户也越来越了解 Cookie 在跟踪他们跨多个站点的活动方面的用途。但直到现在还没有一种方法可以明确地说明你使用 Cookie 的意图。你应该只在第一方上下文中发送 <code>promo_shown</code> Cookie，而将应嵌入其他网站的小组件的会话 Cookie 用于在第三方上下文中提供登录状态。</p>
+<h2 id="SameSite"><a href="#SameSite" class="headerlink" title="SameSite"></a>SameSite</h2><p><code>SameSite</code> 属性使你能够声明 Cookie 是否应限制为第一方或同站上下文。准确理解此处”站点”的含义将会非常有帮助。这里的站点是域名后缀和域名后缀之前部分的组合。例如， <a target="_blank" rel="noopener" href="http://www.lzbsun.top/">www.lzbsun.top</a> 域名是 lzbsun.top 站点的一部分。</p>
+<p><a target="_blank" rel="noopener" href="https://publicsuffix.org/">公共后缀列表</a> 对这一点进行了定义，因此站点不仅仅是 <code>.com</code> 等顶级域名，还包括 <code>github.io</code> 等服务。这就使得 <code>lzbsun.github.io</code> 和 <code>example.github.io</code> 算作独立的站点。</p>
+<blockquote>
+<p>如果用户在 <code>lzbsun.github.io</code> 上向 <code>example.github.io</code> 请求图像，那么这是一个跨站请求。</p>
+</blockquote>
+<p>在 Cookie 上引入 <code>SameSite</code> 属性为控制此行为提供了三种不同的方式。你可以选择不指定属性，也可以使用 <code>Strict</code> 或 <code>Lax</code> 来将 Cookie 的使用限制在同站请求中。</p>
+<p>如果您将 <code>SameSite</code> 设置为 <code>Strict</code> ，你的 Cookie 将仅在第一方上下文中被发送。就用户而言，只有当 Cookie 的站点与浏览器 URL 栏中当前显示的站点相匹配时，才会发送 Cookie。因此，如果 <code>promo_shown</code> cookie 设置如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">promo_shown</span>=1; <span class="hljs-attribute">SameSite</span>=Strict<br></code></pre></td></tr></table></figure>
+
+<p>当用户访问你的网站时，cookie 将按预期与请求一起被发送。<br>但是，当通过链接进入您的网站时（比如通过另一个网站或通过朋友的电子邮件），在最初的请求中不会发送 cookie。<br>这在你有与始终处于初始导航之后的功能（例如更改密码或进行购买）相关的 cookie 时是非常好的做法，但对 <code>promo_shown</code> 限制太大。如果你的读者通过链接进入网站，那么他们会希望通过发送 cookie 来实现他们的首选项。</p>
+<p>这时候就需要通过允许这些顶级导航发送 cookie 来使用 <code>SameSite=Lax</code> 。让我们回到上文提到的钢铁侠的文章示例，其中，另一个站点正在引用你的内容。他们直接使用了你的照片并提供了你原始文章的链接。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://lzbsun.github.io/iron_man.png&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>阅读 <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://lzbsun.github.io/iron_man.html&quot;</span>&gt;</span>article<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>并设置 cookie 为：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">promo_shown</span>=1; <span class="hljs-attribute">SameSite</span>=Lax<br></code></pre></td></tr></table></figure>
+
+<p>当读者在另一个人的博客上时，cookie 在浏览器请求 iron_man.png 时不会被发送。<br>但是，当读者通过链接访问你博客上的 iron_man.html 时，相应请求将包含 cookie。这使得 <code>Lax</code> 非常适合用于影响网站显示的 cookie，而 <code>Strict</code> 对与用户正在执行的操作相关的 cookie 非常有用。</p>
+<p>最后，还可以选择不指定值，而该做法在以前表示隐含地声明您希望在所有上下文中发送 cookie。<br>通过引入 <code>SameSite=None</code> 这个新的值来明确了这一点。这意味着你可以使用 <code>None</code> 来显式表示您有意希望在第三方上下文中发送 cookie。</p>
+<blockquote>
+<p>如果你提供其他站点使用的服务，例如小组件、嵌入内容、附属程序、广告或跨多个站点登录，那么你应该使用 None 来确保你的意图明确。</p>
+</blockquote>
+<h2 id="没有-SameSite-的情况下更改默认行为"><a href="#没有-SameSite-的情况下更改默认行为" class="headerlink" title="没有 SameSite 的情况下更改默认行为"></a>没有 SameSite 的情况下更改默认行为</h2><p>虽然 <code>SameSite</code> 属性得到广泛支持，但遗憾的是该属性并未被开发者广泛采用。<br>随处发送 cookie 的默认开放性意味着虽然所有用例都可以正常工作，但却会使用户容易受到 CSRF 和无意信息泄露的影响。为了鼓励开发者声明他们的意图并为用户提供更安全的体验，IETF 的渐进式改善 cookie 提案列出了两大关键变化：</p>
+<ul>
+<li>没有 <code>SameSite</code> 属性的 cookie 将被视为 <code>SameSite=Lax</code>。</li>
+<li>具有 <code>SameSite=None</code> 的 cookie 还必须指定 <code>Secure</code> ，即这些 cookie 需要一个安全的上下文环境。</li>
+</ul>
+<h2 id="默认为-SameSite-x3D-Lax"><a href="#默认为-SameSite-x3D-Lax" class="headerlink" title="默认为 SameSite&#x3D;Lax"></a>默认为 SameSite&#x3D;Lax</h2><p>属性未设置的时候</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">promo_shown</span>=1<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果你发送的 cookie 没有指定 <code>SameSite</code> 属性……</p>
+</blockquote>
+<p>默认行为设置</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">promo_shown</span>=1; <span class="hljs-attribute">SameSite</span>=Lax<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>浏览器会将该 cookie 视为已指定 <code>SameSite=Lax</code>。</p>
+</blockquote>
+<p>虽然这是为了应用更安全的默认值，但理想情况下你应该设置显式的 <code>SameSite</code> 属性，而不是依赖浏览器为你应用该属性。这会使你的 cookie 意图明确，并提高在不同浏览器之间获得一致体验的机率。</p>
+<h2 id="SameSite-x3D-None-必须是安全的"><a href="#SameSite-x3D-None-必须是安全的" class="headerlink" title="SameSite&#x3D;None 必须是安全的"></a>SameSite&#x3D;None 必须是安全的</h2><p>Rejected</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">widget_session</span>=abc123; <span class="hljs-attribute">SameSite</span>=None<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>设置一个没有 <code>Secure</code> 的 cookie 将被拒绝。</p>
+</blockquote>
+<p>Accepted</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Set-Cookie: <span class="hljs-attribute">widget_session</span>=abc123; <span class="hljs-attribute">SameSite</span>=None; Secure<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>您必须确保将 SameSite&#x3D;None 与 Secure 属性配对。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/HTTP-Cookie/">#HTTP, Cookie</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Cookie SameSite 用法</div>
+      <div>https://lzbsun.github.io/2022/11/09/cookie/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>$Jason X</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年11月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/11/07/topk/" title="top k">
+                        <span class="hidden-mobile">top k</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span>$Jason X</span> <i class="iconfont icon-love"></i> <span>Talk</span> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
